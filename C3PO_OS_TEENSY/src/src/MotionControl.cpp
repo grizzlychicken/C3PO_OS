@@ -167,12 +167,6 @@ ServoParameters ServoList[] = {
 // Total number of Servos
 const int NUM_SERVOS = sizeof(ServoList) / sizeof(ServoList[0]);
 
-// Safety limits for debug/protection only. These do not affect behavior unless
-// a target exceeds safe bounds or a frame produces an abnormal jump.
-static const int SERVO_HARD_MIN_US = 900;
-static const int SERVO_HARD_MAX_US = 2100;
-static const int SERVO_MAX_STEP_PER_LOOP_US = 1200;
-
 static float gServoVelocityUsPerSec[NUM_SERVOS] = {0.0f};
 static int gServoPrevPositionUs[NUM_SERVOS] = {0};
 static bool gServoPrevPositionInit = false;

@@ -18,6 +18,21 @@ extern byte animationIndex;
 #define DEBUG_MOTION_CSV_HEADER 1
 #endif
 
+// Global hard safety envelope for servo pulse output (microseconds).
+// Keep this wide enough to include all per-servo configured limits.
+#ifndef SERVO_HARD_MIN_US
+#define SERVO_HARD_MIN_US 700
+#endif
+
+#ifndef SERVO_HARD_MAX_US
+#define SERVO_HARD_MAX_US 2500
+#endif
+
+// Safety cap for single-loop jump size in RC update path.
+#ifndef SERVO_MAX_STEP_PER_LOOP_US
+#define SERVO_MAX_STEP_PER_LOOP_US 1200
+#endif
+
 #ifndef DBG_MOTION
 #define DBG_MOTION   DEBUG_MOTION // servo writes / motion loop prints
 #endif
