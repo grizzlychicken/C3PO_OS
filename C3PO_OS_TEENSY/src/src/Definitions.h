@@ -6,7 +6,22 @@
 extern byte animationIndex;
 
 // ---------- Debug flags (default OFF for run mode) ----------
-#define DBG_MOTION   0   // servo writes / motion loop prints
+#ifndef DEBUG_MOTION
+#define DEBUG_MOTION 0
+#endif
+
+#ifndef DEBUG_MOTION_CSV
+#define DEBUG_MOTION_CSV 0
+#endif
+
+#ifndef DEBUG_MOTION_CSV_HEADER
+#define DEBUG_MOTION_CSV_HEADER 1
+#endif
+
+#ifndef DBG_MOTION
+#define DBG_MOTION   DEBUG_MOTION // servo writes / motion loop prints
+#endif
+
 #define DBG_ATTACH   0   // attach/detach prints
 #define DBG_EVENTS   1   // button/mode events (safe to keep on)
 #define DBG_AUDIO    1   // audio mode changes (safe)

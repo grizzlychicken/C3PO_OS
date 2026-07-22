@@ -167,6 +167,159 @@ ServoParameters ServoList[] = {
 // Total number of Servos
 const int NUM_SERVOS = sizeof(ServoList) / sizeof(ServoList[0]);
 
+// Safety limits for debug/protection only. These do not affect behavior unless
+// a target exceeds safe bounds or a frame produces an abnormal jump.
+static const int SERVO_HARD_MIN_US = 900;
+static const int SERVO_HARD_MAX_US = 2100;
+static const int SERVO_MAX_STEP_PER_LOOP_US = 1200;
+
+static float gServoVelocityUsPerSec[NUM_SERVOS] = {0.0f};
+static int gServoPrevPositionUs[NUM_SERVOS] = {0};
+static bool gServoPrevPositionInit = false;
+
+static int ClampPulseForServo(uint8_t servoID, float pulseUs)
+{
+    int minUs = (int)ServoList[servoID].MinDegrees;
+    int maxUs = (int)ServoList[servoID].MaxDegrees;
+
+    minUs = max(minUs, SERVO_HARD_MIN_US);
+    maxUs = min(maxUs, SERVO_HARD_MAX_US);
+
+    if (minUs > maxUs)
+    {
+        int safeMid = (SERVO_HARD_MIN_US + SERVO_HARD_MAX_US) / 2;
+        return constrain((int)pulseUs, safeMid, safeMid);
+    }
+
+    return constrain((int)pulseUs, minUs, maxUs);
+}
+
+static int ClampStepFromCurrent(uint8_t servoID, float targetUs)
+{
+    int curUs = (int)ServoList[servoID].current_position;
+    int tgtUs = ClampPulseForServo(servoID, targetUs);
+    int delta = tgtUs - curUs;
+
+    if (delta > SERVO_MAX_STEP_PER_LOOP_US)
+        delta = SERVO_MAX_STEP_PER_LOOP_US;
+    else if (delta < -SERVO_MAX_STEP_PER_LOOP_US)
+        delta = -SERVO_MAX_STEP_PER_LOOP_US;
+
+    return ClampPulseForServo(servoID, curUs + delta);
+}
+
+static void UpdateVelocityEstimates(float dtSec)
+{
+    if (dtSec <= 0.0001f)
+        return;
+
+    for (uint8_t i = 0; i < NUM_SERVOS; i++)
+    {
+        int nowUs = (int)ServoList[i].current_position;
+        int prevUs = gServoPrevPositionUs[i];
+        gServoVelocityUsPerSec[i] = (nowUs - prevUs) / dtSec;
+        gServoPrevPositionUs[i] = nowUs;
+    }
+}
+
+static void EmitDebugMotionTelemetry20Hz()
+{
+#if DEBUG_MOTION
+    static uint32_t lastPrintMs = 0;
+    uint32_t nowMs = millis();
+    if ((uint32_t)(nowMs - lastPrintMs) < 50) // 20 Hz
+        return;
+    lastPrintMs = nowMs;
+
+#if DEBUG_MOTION_CSV
+#if DEBUG_MOTION_CSV_HEADER
+    static bool headerPrinted = false;
+    if (!headerPrinted)
+    {
+        Serial.print("ms,mode_rc,mode_head,raw_yaw,raw_pitch,raw_roll,raw_tfb,raw_tlr,raw_trot,raw_thip");
+        for (uint8_t i = 0; i < NUM_SERVOS; i++)
+        {
+            Serial.print(",s");
+            Serial.print((int)i);
+            Serial.print("_t,s");
+            Serial.print((int)i);
+            Serial.print("_c,s");
+            Serial.print((int)i);
+            Serial.print("_v");
+        }
+        Serial.println();
+        headerPrinted = true;
+    }
+#endif
+
+    Serial.print((unsigned long)nowMs);
+    Serial.print(",");
+    Serial.print((int)gRCBottangoMode);
+    Serial.print(",");
+    Serial.print((int)gHeadRunMode);
+    Serial.print(",");
+    Serial.print((int)ChannelData(cHEADYAW));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cHEADPITCH));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cHEADROLL));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cTORSOFB));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cTORSOLR));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cTORSOROT));
+    Serial.print(",");
+    Serial.print((int)ChannelData(cTORSOHIPSHIFT));
+
+    for (uint8_t i = 0; i < NUM_SERVOS; i++)
+    {
+        Serial.print(",");
+        Serial.print((int)ServoList[i].target_position);
+        Serial.print(",");
+        Serial.print((int)ServoList[i].current_position);
+        Serial.print(",");
+        Serial.print((int)gServoVelocityUsPerSec[i]);
+    }
+    Serial.println();
+#else
+
+    Serial.print("MDBG mode(rc/head)=");
+    Serial.print((int)gRCBottangoMode);
+    Serial.print("/");
+    Serial.print((int)gHeadRunMode);
+
+    Serial.print(" raw[yaw/pitch/roll/tfb/tlr/trot/thip]=");
+    Serial.print((int)ChannelData(cHEADYAW));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cHEADPITCH));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cHEADROLL));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cTORSOFB));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cTORSOLR));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cTORSOROT));
+    Serial.print("/");
+    Serial.print((int)ChannelData(cTORSOHIPSHIFT));
+
+    for (uint8_t i = 0; i < NUM_SERVOS; i++)
+    {
+        Serial.print(" | s");
+        Serial.print((int)i);
+        Serial.print(" t=");
+        Serial.print((int)ServoList[i].target_position);
+        Serial.print(" c=");
+        Serial.print((int)ServoList[i].current_position);
+        Serial.print(" v=");
+        Serial.print((int)gServoVelocityUsPerSec[i]);
+    }
+    Serial.println();
+#endif
+#endif
+}
+
 uint8_t ServoPins[] = {
     pinTorsoLRRight,
     pinTorsoLRLeft,
@@ -758,14 +911,38 @@ void ProcessAutoHeadMovement(uint8_t servoIndex, int midPosition, int deviation)
         {
             if (gHeadRunMode == HEADCONTROL)
             {
+                uint32_t nowMs = millis();
+                static uint32_t lastUpdateMs = 0;
+
+                if (!gServoPrevPositionInit)
+                {
+                    for (uint8_t i = 0; i < NUM_SERVOS; i++)
+                    {
+                        gServoPrevPositionUs[i] = (int)ServoList[i].current_position;
+                    }
+                    gServoPrevPositionInit = true;
+                    lastUpdateMs = nowMs;
+                }
+
+                float dtSec = (float)(nowMs - lastUpdateMs) / 1000.0f;
+                if (dtSec < 0.001f)
+                    dtSec = 0.001f;
+                if (dtSec > 0.250f)
+                    dtSec = 0.250f;
+
                 for (uint8_t i = 0; i < NUM_SERVOS; i++)
                 {
                     if (abs(ServoList[i].target_position - ServoList[i].current_position) > 1)
                     {
-                        SetServoPosition(i, ServoList[i].target_position);
-                        ServoList[i].current_position = ServoList[i].target_position;
+                        int safeTargetUs = ClampStepFromCurrent(i, ServoList[i].target_position);
+                        SetServoPosition(i, safeTargetUs);
+                        ServoList[i].current_position = safeTargetUs;
                     }
                 }
+
+                UpdateVelocityEstimates(dtSec);
+                EmitDebugMotionTelemetry20Hz();
+                lastUpdateMs = nowMs;
             }
         }
 
@@ -1402,7 +1579,11 @@ void SetServoPosition(int ServoID, float target_position)
     }
 #endif
 
-    ServoList[ServoID].sMotor.writeMicroseconds((int)target_position);
+    if (ServoID < 0 || ServoID >= NUM_SERVOS)
+        return;
+
+    int clampedUs = ClampPulseForServo((uint8_t)ServoID, target_position);
+    ServoList[ServoID].sMotor.writeMicroseconds(clampedUs);
 }
 
 
