@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Upload Main Teensy (C3PO_OS_TEENSY)",
+      "type": "shell",
+      "command": "platformio",
+      "args": [
+        "run",
+        "-d",
+        "C3PO_OS_TEENSY",
+        "-e",
+        "teensy41",
+        "-t",
+        "upload"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Upload Slave Teensy (C3PO_Teensy_SLAVE)",
+      "type": "shell",
+      "command": "platformio",
+      "args": [
+        "run",
+        "-d",
+        "C3PO_Teensy_SLAVE",
+        "-e",
+        "teensy41",
+        "-t",
+        "upload"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Upload Audio Board (C3PO_Audio)",
+      "type": "shell",
+      "command": "platformio",
+      "args": [
+        "run",
+        "-d",
+        "C3PO_Audio",
+        "-e",
+        "teensy41",
+        "-t",
+        "upload"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

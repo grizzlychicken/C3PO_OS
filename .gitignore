@@ -16,6 +16,8 @@
 
 # VS Code local settings
 **/.vscode/
+!/.vscode/
+!/.vscode/tasks.json
 
 # Logs
 **/*.log
