@@ -1,0 +1,19 @@
+{
+  "name": "MyActuator",
+  "version": "0.1.7",
+  "description": "Arduino implementation of the MyActuator control protocol. Currently only RS-485 and both V2 and V3 protocols.",
+  "keywords": "my,actuator,myactuator,hub,motor,bldc,rmd,gyems",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Clstroud/MyActuator.git"
+  },
+  "authors": [
+    {
+      "name": "Chris Stroud"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "frameworks": "*",
+  "platforms": "arduino"
+}

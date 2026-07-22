@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../C3PO_OS_TEENSY"
+		},
+		{
+			"name": "TORSO_ESP32",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

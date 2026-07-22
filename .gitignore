@@ -1,0 +1,25 @@
+# PlatformIO
+**/.pio/
+**/.piolibdeps/
+**/.pioenvs/
+**/.sconsign.dblite
+
+# Build outputs
+**/build/
+**/dist/
+**/*.o
+**/*.obj
+**/*.elf
+**/*.hex
+**/*.bin
+**/*.map
+
+# VS Code local settings
+**/.vscode/
+
+# Logs
+**/*.log
+
+# OS cruft
+**/.DS_Store
+**/Thumbs.db

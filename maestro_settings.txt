@@ -1,0 +1,90 @@
+<!--Pololu Maestro servo controller settings file, http://www.pololu.com/catalog/product/1350-->
+<UscSettings version="1">
+  <NeverSuspend>true</NeverSuspend>
+  <SerialMode>UART_FIXED_BAUD_RATE</SerialMode>
+  <FixedBaudRate>15209</FixedBaudRate>
+  <SerialTimeout>0</SerialTimeout>
+  <EnableCrc>false</EnableCrc>
+  <SerialDeviceNumber>12</SerialDeviceNumber>
+  <SerialMiniSscOffset>0</SerialMiniSscOffset>
+  <Channels ServosAvailable="6" ServoPeriod="156">
+    <!--Period = 19.968 ms-->
+    <!--Channel 0-->
+    <Channel name="neck rot" mode="Servo" min="2048" max="8832" homemode="Goto" home="4800" speed="31" acceleration="0" neutral="8000" range="1905" />
+    <!--Channel 1-->
+    <Channel name="neck L front" mode="Servo" min="2048" max="8832" homemode="Goto" home="4000" speed="31" acceleration="0" neutral="8000" range="1905" />
+    <!--Channel 2-->
+    <Channel name="neck R front" mode="Servo" min="2048" max="8832" homemode="Goto" home="3200" speed="31" acceleration="0" neutral="8000" range="1905" />
+    <!--Channel 3-->
+    <Channel name="neck back" mode="Servo" min="1984" max="8832" homemode="Goto" home="3200" speed="31" acceleration="0" neutral="8000" range="1905" />
+    <!--Channel 4-->
+    <Channel name="front sh" mode="Servo" min="3200" max="8832" homemode="Goto" home="6800" speed="31" acceleration="0" neutral="4800" range="1905" />
+    <!--Channel 5-->
+    <Channel name="rear sh" mode="Servo" min="3200" max="8832" homemode="Goto" home="3200" speed="31" acceleration="0" neutral="7232" range="1905" />
+  </Channels>
+  <Sequences>
+    <Sequence name="Neck only" useSpeedAndAcceleration="false">
+      <Frame name="Frame 0" duration="4000">4800 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 1" duration="3000">4800 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 2" duration="2000">6032 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 3" duration="1200">6032 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 4" duration="3000">4320 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 5" duration="7000">4800 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 6" duration="4000">4800 4400 3859 4400 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 7" duration="2000">4800 4400 3859 4400 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 8" duration="1000">4800 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 9" duration="1200">5736 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 10" duration="800">4287 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 11" duration="2000">5341 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 12" duration="3000">4682 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 13" duration="1500">5868 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 14" duration="2000">4484 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+      <Frame name="Frame 15" duration="3000">5670 4000 3200 3200 6800 3200 s 31 31 31 31 31 31 a 0 0 0 0 0 0</Frame>
+    </Sequence>
+  </Sequences>
+  <Script ScriptDone="false">
+### Sequence subroutines: ###
+
+# Neck only
+sub Neck_only
+  4000 4800 4000 3200 3200 6800 3200 frame_0..5 # Frame 0
+  3000 delay # Frame 1
+  2000 6032 frame_0 # Frame 2
+  1200 delay # Frame 3
+  3000 4320 frame_0 # Frame 4
+  7000 4800 frame_0 # Frame 5
+  4000 4400 3859 4400 frame_1..3 # Frame 6
+  2000 delay # Frame 7
+  1000 4000 3200 3200 frame_1..3 # Frame 8
+  1200 5736 frame_0 # Frame 9
+  800 4287 frame_0 # Frame 10
+  2000 5341 frame_0 # Frame 11
+  3000 4682 frame_0 # Frame 12
+  1500 5868 frame_0 # Frame 13
+  2000 4484 frame_0 # Frame 14
+  3000 5670 frame_0 # Frame 15
+  return
+
+sub frame_0..5
+  5 servo
+  4 servo
+  3 servo
+  2 servo
+  1 servo
+  0 servo
+  delay
+  return
+
+sub frame_0
+  0 servo
+  delay
+  return
+
+sub frame_1..3
+  3 servo
+  2 servo
+  1 servo
+  delay
+  return
+</Script>
+</UscSettings>

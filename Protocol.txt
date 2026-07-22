@@ -1,0 +1,29 @@
+General prototcol
+<aaCCbbdd>
+< - Start Marker
+a - Board address
+CC - Command
+b - Data 1
+dd - Data 2
+
+SP - Servo Position
+aSPbdddd
+
+a - Addr (Servo Bank)
+SP - Command
+b - Servo number
+dddd - position is us
+
+SA - Servo Attach
+aSAb
+
+a - Addr (Servo Bank)
+SA - Command
+b - Servo number - 0 for attach all
+
+SD - Servo Detach
+aSAb
+
+a - Addr (Servo Bank)
+SD - Command
+b - Servo number - 0 for detach all

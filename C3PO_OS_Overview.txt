@@ -1,0 +1,41 @@
+C3po Working FR SKy RC and Bottango Animation Integration
+__________________________________________________________
+
+Notes for structure:
+
+******Bottango Versions******
+Had issues with bottango v 6.2 and 6.5.  
+-When exporting code from either of these the setup file for 2 x teensy 4.1 controllers was being blended and having a too many pins error(think mainly 6.2b)- known issue from bottango tech support.'
+-When exporting animations to code with 2x teensy 4.1 controllers the second controller duplicated the first controller pin and movement assignments.
+.....FIX- Upgraded to bottango v7 and rewrote actuation code.
+
+****Exporting Bottango code in v7******
+Had issues when selected looping first animation as would not progress to allow triggering of alternate movements.  If code not working check your export code settings.
+
+
+****Code Structure*****
+Animation Control
+Switch is set in events loop for ANIMATION_MODE.  Read switch is processed in Motion Control loop and calls AnimationControl function in GeneratedCodeAnimations namespace.  Here setup is called to register servos and bottango loop is called.  Movement processing then occurs in BottangoArduinoCallbacks function and movement processed in onearlyloop function.
+Have detaches servos on entry to loop of RC servos and bottango animation servos to get a clean transfer.  No detachement of bottango servos as yet on exit from ANIMATION_MODE.
+
+RC Control
+Event sloop processes switch for RC-MODE.  Switches and buttons processed in events loop.  Elbow and wrist servos are on off switches using trim switches. Functions for this are in the motion control section and switches are read and triggered in the Events section.
+**need to smooth elbow and wrist movements and blend with other movements in RC mode****
+Servos are attached manually in RCMODE with momentary switch.
+
+First 3 way switch switches from:
+-off
+-RC drive mode - head functions still actuate
+-RC control mode- all servos are active
+
+Second 3 way switch switches from:
+- RC animations Off
+- RC animations Auto mode- does auto head functions
+- Rc Animations Control mode
+
+*****Method to upload code from bottango*****
+Download sequences for each controller from bottango and store in logical place (mine is in c3po/OS/Bottango/Teensy Main & Teensy Slave.
+Open main Controller program in VS code.  So Teensy_Main and Teensy_Slave are the 2 project files.
+Open GeneratedCodeAnimations.ccp files in vs code one at a time.  Copy everything below  // setup and replace the existing code in the generatedcodeanimations.ccp file.
+
+

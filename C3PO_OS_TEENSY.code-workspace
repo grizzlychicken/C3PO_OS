@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"path": "C3PO_OS_TEENSY"
+		},
+		{
+			"name": "C3PO_Teensy_SLAVE",
+			"path": "C3PO_Teensy_SLAVE"
+		},
+		{
+			"name": "DF_camera_ ESP32_S3",
+			"path": "../../../../baby droid/BBA - BigBabyAstro/big baby RC control/Big_Baby_OS/DFCAM_big_baby/DF_camera_ ESP32_S3"
+		},
+		{
+			"name": "Neopixel_TZ",
+			"path": "../../../../../../PlatformIO/Projects/Neopixel_TZ"
+		},
+		{
+			"name": "LED Control",
+			"path": "../../../../baby droid/BBA - BigBabyAstro/big baby RC control/Big_Baby_OS/LED Control"
+		},
+		{
+			"name": "Big_B_main_ESP32",
+			"path": "../../../../baby droid/BBA - BigBabyAstro/big baby RC control/Big_Baby_OS/Big_B_main_ESP32"
+		},
+		{
+			"name": "MArcduino Master",
+			"path": "../../../../r2d2/MArcduino Master"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"deque": "cpp",
+			"list": "cpp",
+			"string": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"vector": "cpp",
+			"string_view": "cpp",
+			"initializer_list": "cpp"
+		}
+	}
+}
